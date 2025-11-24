@@ -292,12 +292,15 @@ spec:
     steps {
         container('dind') {
             sh '''
-                docker login nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                -u admin -p Changeme@2025
+                echo '{"insecure-registries":["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]}' > /etc/docker/daemon.json
+                dockerd & sleep 5
+
+                docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 -u admin -p Changeme@2025
             '''
         }
     }
 }
+
 
 stage('Push to Nexus') {
     steps {
