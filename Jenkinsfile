@@ -288,12 +288,13 @@ spec:
 
 
         /* 5. LOGIN TO NEXUS */
-     stage('Login to Nexus Registry') {
+   stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                dockerd-entrypoint.sh --insecure-registry nexus.imcc.com:5000 &
+                echo "192.168.20.250 nexus.imcc.com" >> /etc/hosts
 
+                dockerd-entrypoint.sh --insecure-registry nexus.imcc.com:5000 &
                 sleep 10
 
                 docker login nexus.imcc.com:5000 -u admin -p Changeme@2025
