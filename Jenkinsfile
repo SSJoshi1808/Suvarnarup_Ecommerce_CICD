@@ -293,38 +293,38 @@ spec:
         container('dind') {
             sh '''
                 echo "Starting Docker daemon with insecure registry..."
-                dockerd-entrypoint.sh --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 &
+                dockerd-entrypoint.sh --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083 &
 
                 sleep 15
 
                 docker login \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                  http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083 \
                   -u admin -p Changeme@2025
             '''
         }
     }
 }
 
+
 stage('Push to Nexus') {
     steps {
         container('dind') {
             sh '''
                 docker tag ecommerce-frontend:latest \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/shreya_joshi_repo/ecommerce-frontend:v1
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/repository/shreya_joshi_repo/ecommerce-frontend:v1
 
                 docker tag ecommerce-backend:latest \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/shreya_joshi_repo/ecommerce-backend:v1
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/repository/shreya_joshi_repo/ecommerce-backend:v1
 
                 docker push \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/shreya_joshi_repo/ecommerce-frontend:v1
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/repository/shreya_joshi_repo/ecommerce-frontend:v1
 
                 docker push \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/shreya_joshi_repo/ecommerce-backend:v1
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8083/repository/shreya_joshi_repo/ecommerce-backend:v1
             '''
         }
     }
 }
-
 
 
 
