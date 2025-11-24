@@ -259,19 +259,33 @@ spec:
         }
 
         /* 4. SONARQUBE */
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         container('sonar-scanner') {
+        //             sh '''
+        //                 sonar-scanner \
+        //                     -Dsonar.projectKey=ecommerce_project \
+        //                     -Dsonar.sources=frontend,backend \
+        //                     -Dsonar.host.url=http://sonarqube.imcc.com \
+        //                     -Dsonar.token=sqp_5ebc0a690cbe1f0fd4fd682557828d8117b6c229
+        //             '''
+        //         }
+        //     }
+        // }
         stage('SonarQube Analysis') {
-            steps {
-                container('sonar-scanner') {
-                    sh '''
-                        sonar-scanner \
-                            -Dsonar.projectKey=ecommerce_project \
-                            -Dsonar.sources=frontend,backend \
-                            -Dsonar.host.url=http://sonarqube.imcc.com \
-                            -Dsonar.token=sqp_5ebc0a690cbe1f0fd4fd682557828d8117b6c229
-                    '''
-                }
-            }
+    steps {
+        container('sonar-scanner') {
+            sh '''
+                sonar-scanner \
+                    -Dsonar.projectKey=ecommerce_project \
+                    -Dsonar.sources=frontend,backend \
+                    -Dsonar.host.url=http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000 \
+                    -Dsonar.token=sqp_5ebc0a690cbe1f0fd4fd682557828d8117b6c229
+            '''
         }
+    }
+}
+
 
         /* 5. LOGIN TO NEXUS */
         stage('Login to Nexus Registry') {
