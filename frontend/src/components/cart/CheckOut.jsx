@@ -82,7 +82,7 @@ const CheckOut = () => {
       };
 
       // Create order directly
-      const orderResponse = await fetch('http://localhost:9000/api/orders', {
+      const orderResponse = await fetch('http://localhost:9001/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

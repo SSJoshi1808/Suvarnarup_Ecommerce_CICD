@@ -1,13 +1,13 @@
-import React, { useState ,useEffect} from 'react'
-import Hero from '../components/layout/Hero'
-import CollectionSection from '../components/products/CollectionSection'
-import NewArrivals from '../components/products/NewArrivals'
-import Productdetails from '../components/products/Productdetails'
-import ProductGrid from '../components/products/ProductGrid'
-import { useDispatch } from "react-redux"
-import { fetchProductsByFilters } from '../redux/slices/productSlice'
-import axios from 'axios'
-import { useSelector } from "react-redux";
+// import React, { useState ,useEffect} from 'react'
+// import Hero from '../components/layout/Hero'
+// import CollectionSection from '../components/products/CollectionSection'
+// import NewArrivals from '../components/products/NewArrivals'
+// import Productdetails from '../components/products/Productdetails'
+// import ProductGrid from '../components/products/ProductGrid'
+// import { useDispatch } from "react-redux"
+// import { featchProductsByFilters } from '../redux/slices/productSlice'
+// import axios from 'axios'
+// import { useSelector } from "react-redux";
 
 
 
@@ -58,39 +58,31 @@ import { useSelector } from "react-redux";
 //   images:[{ url: "https://picsum.photos/500/500?random=10"}]
 // },
 // ]
-
+import React, { useEffect } from "react";
+import Hero from "../components/layout/Hero";
+import CollectionSection from "../components/products/CollectionSection";
+import NewArrivals from "../components/products/NewArrivals";
+import Productdetails from "../components/products/Productdetails";
+import ProductGrid from "../components/products/ProductGrid";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsByFilters, fetchBestSeller } from "../redux/slices/productSlice";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { products, loading, error, bestSeller } = useSelector((state) => state.products);
 
-  const dispatch = useDispatch()
-  const {products,loading,error}=useSelector((state)=>state.products);
-  const [bestSellerProduct,setBestSellerProduct] =useState(null);
+  useEffect(() => {
+    dispatch(
+      fetchProductsByFilters({
+        category: "Pearl",
+        collections: "VintageCharm",
+        rating: 7.5,
+        limit: 8,
+      })
+    );
+    dispatch(fetchBestSeller()); // ✅ Redux handles it now
+  }, [dispatch]);
 
-  
-
-  useEffect(()=>{
-    dispatch(fetchProductsByFilters({
-      category:"Pearl",
-      collections:"VintageCharm",
-      rating:7.5,
-      limit:8,
-    }))
-    const fetchBestSellerProducts = async()=>{
-      try{
-        const response = await axios.get('http://localhost:9000/api/products/best-seller')
-        const bestSeller = response.data
-        setBestSellerProduct({
-          ...bestSeller,
-          category: bestSeller.category || 'Pearl',
-          collections: bestSeller.collections || 'VintageCharm'
-        })
-      }catch(error)
-      { 
-        console.error(error)
-      }
-    }
-    fetchBestSellerProducts()
-  },[dispatch])
   return (
     <div className="space-y-8 sm:space-y-12">
       <Hero />
@@ -99,21 +91,25 @@ const Home = () => {
 
       {/* Best Seller */}
       <div className="px-4 sm:px-6">
-        <h2 className='text-2xl sm:text-3xl lg:text-4xl text-center font-bold mb-6 sm:mb-8'>Best Seller</h2>
-        {bestSellerProduct?(<Productdetails productId={bestSellerProduct._id}/>):(
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl text-center font-bold mb-6 sm:mb-8">
+          Best Seller
+        </h2>
+        {bestSeller && bestSeller._id ? (
+          <Productdetails productId={bestSeller._id} />
+        ) : (
           <p className="text-center text-gray-600">Loading Best Seller Products...</p>
         )}
       </div>
-        
 
-      <div className='container mx-auto px-4 sm:px-6'>
-        <h2 className='text-2xl sm:text-3xl lg:text-4xl text-center font-bold mb-6 sm:mb-8'>
-          SuvarnaRup Best Collection 
+      {/* Product Grid */}
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl text-center font-bold mb-6 sm:mb-8">
+          SuvarnaRup Best Collection
         </h2>
-        <ProductGrid products={products} loading={loading} error={error}/>
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

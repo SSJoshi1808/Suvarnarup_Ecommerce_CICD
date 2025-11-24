@@ -226,7 +226,7 @@ const Productdetails = ({ productId: propId }) => {
     if (!productId) return;
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/api/products/${productId}`);
+        const res = await axios.get(`http://localhost:9001/api/products/${productId}`);
         setSelectedProduct(res.data);
       } catch (err) {
         console.error(err);

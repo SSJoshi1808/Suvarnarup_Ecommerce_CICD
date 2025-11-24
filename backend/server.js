@@ -91,7 +91,7 @@ if (!process.env.MONGO_URL) {
 const app = express();
 
 // ✅ Configure CORS correctly
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:5173", "http://localhost:5174"];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -129,6 +129,6 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Start the Server
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
 });
