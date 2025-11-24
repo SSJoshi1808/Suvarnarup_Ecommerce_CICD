@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-deployment
+  namespace: 2401080
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce
+  template:
+    metadata:
+      labels:
+        app: ecommerce
+    spec:
+      containers:
+        - name: ecommerce
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+
+          env:
+            # === BACKEND ENV ===
+            - name: MONGO_URI
+              value: "mongodb+srv://prajaktajoshi2003:JglbBmZqEmw5myKp@cluster0.on4cy.mongodb.net/suvarnarup?retryWrites=true&w=majority&appName=Cluster0"
+
+            - name: JWT_SECRET
+              value: "0893d61211e0c9beed3d44697bc27342c7e1bef0a5fd6a94c357c5aa52a1f06d92b49a66ffc7f4469314928d2fca66552af49a9c902f642451d5382b701c996d"
+
+            - name: PAYMENT_KEY
+              value: "AZ6NPLpcyJ8y-V7AgbDrUplQ3Z5RjW_nkEaATaR_ow9O2OqbEqNXO84iIGoA2UL0iU9IkXfIy2UUcl"
+
+            - name: NODE_ENV
+              value: "production"
+
+            # === SONARQUBE TOKEN ===
+            - name: SONAR_TOKEN
+              value: "sqp_5ebc0a690cbe1f0fd4fd682557828d8117b6c229"
+
+---
