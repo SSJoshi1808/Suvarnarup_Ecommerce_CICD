@@ -288,14 +288,15 @@ spec:
 
 
         /* 5. LOGIN TO NEXUS */
-        stage('Login to Nexus Registry') {
+     stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo '{"insecure-registries":["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]}' > /etc/docker/daemon.json
-                dockerd & sleep 5
+                dockerd-entrypoint.sh --insecure-registry nexus.imcc.com:5000 &
 
-                docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 -u admin -p Changeme@2025
+                sleep 10
+
+                docker login nexus.imcc.com:5000 -u admin -p Changeme@2025
             '''
         }
     }
