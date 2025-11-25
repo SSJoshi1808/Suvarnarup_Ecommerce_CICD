@@ -828,16 +828,31 @@ spec:
         }
 
      /* 5. LOGIN TO NEXUS */
+        // stage('Login to Nexus Registry') {
+        //     steps {
+        //         container('dind') {
+        //             sh '''
+        //                 docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+        //                     -u student -p Imcc@2025
+        //             '''
+        //         }
+        //     }
+        // }
         stage('Login to Nexus Registry') {
-            steps {
-                container('dind') {
-                    sh '''
-                        docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                            -u student -p Imcc@2025
-                    '''
-                }
-            }
+    steps {
+        container('dind') {
+            sh '''
+                echo "Waiting for Docker daemon..."
+                sleep 10
+
+                echo "Logging in to Nexus (HTTP registry)..."
+                docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    -u student -p "Imcc@2025"
+            '''
         }
+    }
+}
+
 
         /* 6. PUSH IMAGES TO NEXUS */
        stage('Push to Nexus') {
