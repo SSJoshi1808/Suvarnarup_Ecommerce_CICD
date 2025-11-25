@@ -796,17 +796,30 @@ spec:
     command: ['cat']
     tty: true
 
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ['cat']
-    tty: true
-    env:
+// /*   - name: kubectl
+// //     image: bitnami/kubectl:latest
+// //     command: ['cat']
+// //     tty: true
+// //     env:
+// //     - name: KUBECONFIG
+// //       value: /kube/config
+// //     volumeMounts:
+// //     - name: kubeconfig-secret
+// //       mountPath: /kube/config
+// //       subPath: kubeconfig*/
+
+- name: kubectl
+  image: bitnami/kubectl:latest
+  command: ['sleep', '999999']   # keeps the pod alive
+  tty: true
+  env:
     - name: KUBECONFIG
       value: /kube/config
-    volumeMounts:
+  volumeMounts:
     - name: kubeconfig-secret
       mountPath: /kube/config
-      subPath: kubeconfig
+      subPath: kubeconfig        # IMPORTANT: map file → file
+
 
   - name: dind
     image: docker:dind
@@ -923,18 +936,33 @@ spec:
             }
         }
 
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         container('kubectl') {
+        //             sh '''
+        //                 kubectl apply -f k8s/deployment.yaml
+        //                 kubectl apply -f k8s/service.yaml
+        //                 kubectl rollout status deployment/ecommerce-frontend -n ecommerce
+        //                 kubectl rollout status deployment/ecommerce-backend -n ecommerce
+        //             '''
+        //         }
+        //     }
+        // }
+
         stage('Deploy to Kubernetes') {
-            steps {
-                container('kubectl') {
-                    sh '''
-                        kubectl apply -f k8s/deployment.yaml
-                        kubectl apply -f k8s/service.yaml
-                        kubectl rollout status deployment/ecommerce-frontend -n ecommerce
-                        kubectl rollout status deployment/ecommerce-backend -n ecommerce
-                    '''
-                }
-            }
+    steps {
+        container('kubectl') {
+            sh '''
+                kubectl get nodes
+                kubectl apply -f k8s/deployment.yaml
+                kubectl apply -f k8s/service.yaml
+                kubectl rollout status deployment/ecommerce-frontend -n ecommerce
+                kubectl rollout status deployment/ecommerce-backend -n ecommerce
+            '''
         }
+    }
+}
+
     }
 }
 
