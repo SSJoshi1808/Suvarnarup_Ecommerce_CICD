@@ -841,7 +841,8 @@ cat <<EOF > /etc/docker/daemon.json
 EOF
 
                 echo "===== STARTING DOCKER DAEMON (HTTP ONLY) ====="
-                dockerd --tls=false \
+                dockerd \
+                    --tls=false \
                     --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
                     > /tmp/dockerd.log 2>&1 &
 
@@ -850,9 +851,9 @@ EOF
 
                 echo "===== LOGGING INTO NEXUS VIA HTTP ====="
                 echo "Imcc@2025" | docker login \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
                     --username student \
-                    --password-stdin \
-                    http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
+                    --password-stdin
             '''
         }
     }
