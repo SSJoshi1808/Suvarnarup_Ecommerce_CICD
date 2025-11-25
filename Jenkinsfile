@@ -474,7 +474,7 @@ EOF
 
                 echo "Logging into Nexus using HTTP..."
                 echo "Imcc@2025" | docker login \
-                    --username admin \
+                    --username student \
                     --password-stdin \
                     nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
             '''
