@@ -831,29 +831,16 @@ spec:
     steps {
         container('dind') {
             sh '''
-                echo "===== CONFIGURING DOCKER ====="
-                mkdir -p /etc/docker
+                echo "===== WAITING FOR DOCKER DAEMON ====="
+                sleep 20
 
-cat <<EOF > /etc/docker/daemon.json
-{
-  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
-}
-EOF
+                echo "===== LOGGING INTO NEXUS (HTTPS, INSECURE TLS) ====="
 
-                echo "===== STARTING DOCKER DAEMON (HTTP ONLY) ====="
-                dockerd \
-                    --tls=false \
-                    --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                    > /tmp/dockerd.log 2>&1 &
-
-                echo "===== WAITING FOR DOCKER ====="
-                sleep 25
-
-                echo "===== LOGGING INTO NEXUS VIA HTTP ====="
                 echo "Imcc@2025" | docker login \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    https://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
                     --username student \
-                    --password-stdin
+                    --password-stdin \
+                    --tls-verify=false
             '''
         }
     }
