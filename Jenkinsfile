@@ -828,18 +828,36 @@ spec:
         }
 
         stage('Login to Nexus Registry') {
-            steps {
-                container('dind') {
-                    sh '''
-                        echo "Logging in to Nexus..."
-                        echo "Imcc@2025" | docker login \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                          --username student \
-                          --password-stdin
-                    '''
-                }
-            }
+    steps {
+        container('dind') {
+            sh '''
+                echo "Creating Docker config..."
+                mkdir -p /etc/docker
+
+cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+}
+EOF
+
+                echo "Starting Docker Daemon (HTTP-only)..."
+                dockerd --host=tcp://0.0.0.0:2375 \
+                        --insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                        --tls=false > /tmp/dockerd.log 2>&1 &
+
+                echo "Waiting for Docker..."
+                sleep 25
+
+                echo "Logging in to Nexus (HTTP)..."
+                echo "Imcc@2025" | docker --host=tcp://0.0.0.0:2375 login \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    --username student \
+                    --password-stdin
+            '''
         }
+    }
+}
+
 
         stage('Push to Nexus') {
             steps {
