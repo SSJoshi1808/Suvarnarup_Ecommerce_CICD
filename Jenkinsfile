@@ -827,36 +827,40 @@ spec:
             }
         }
 
-        stage('Login to Nexus Registry') {
+       stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo "Creating Docker config..."
+                echo "---- Creating Docker config ----"
                 mkdir -p /etc/docker
 
-cat <<EOF > /etc/docker/daemon.json
+                cat <<EOF > /etc/docker/daemon.json
 {
-  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"],
+  "debug": true
 }
 EOF
 
-                echo "Starting Docker Daemon (HTTP-only)..."
-                dockerd --host=tcp://0.0.0.0:2375 \
-                        --insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                        --tls=false > /tmp/dockerd.log 2>&1 &
+                echo "---- Starting Docker Daemon (HTTP only, no TLS) ----"
+                dockerd \
+                  --host=tcp://0.0.0.0:2375 \
+                  --insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                  --tls=false > /tmp/dockerd.log 2>&1 &
 
-                echo "Waiting for Docker..."
-                sleep 25
+                echo "---- Waiting for Docker ----"
+                sleep 30
 
-                echo "Logging in to Nexus (HTTP)..."
-                echo "Imcc@2025" | docker --host=tcp://0.0.0.0:2375 login \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                echo "---- Logging into Nexus using HTTP ----"
+                echo "Imcc@2025" | docker \
+                    --host=tcp://0.0.0.0:2375 \
+                    login nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
                     --username student \
                     --password-stdin
             '''
         }
     }
 }
+
 
 
         stage('Push to Nexus') {
