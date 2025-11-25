@@ -777,7 +777,7 @@
 //         }
 //     }
 
-ppipeline {
+pipeline {
     agent {
         kubernetes {
             yaml '''
