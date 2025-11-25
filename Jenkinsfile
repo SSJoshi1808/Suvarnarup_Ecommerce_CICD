@@ -839,7 +839,7 @@ spec:
                 echo "Imcc@2025" | docker login \
                     --username student \
                     --password-stdin \
-                    http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
+                    https://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
             '''
         }
     }
