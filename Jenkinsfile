@@ -453,7 +453,8 @@ spec:
         }
 
         /* 5. LOGIN TO NEXUS DOCKER REGISTRY */
-  stage('Login to Nexus Registry') {
+  /* 5. LOGIN TO NEXUS */
+stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
@@ -466,24 +467,23 @@ cat <<EOF > /etc/docker/daemon.json
 EOF
 
                 echo "Starting Docker daemon..."
-                dockerd-entrypoint.sh --tls=false &
+                dockerd-entrypoint.sh --tls=false --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 &
 
                 echo "Waiting for Docker..."
-                sleep 25
+                sleep 30
 
-                echo "Logging into Nexus (HTTP only)..."
-                echo "Changeme@2025" | docker login \
-                  --tls=false \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                  --username admin --password-stdin
+                echo "Logging into Nexus using HTTP..."
+                echo "Imcc@2025" | docker login \
+                    --username admin \
+                    --password-stdin \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
             '''
         }
     }
 }
 
-
-        /* 6. PUSH IMAGES */
-        stage('Push to Nexus') {
+/* 6. PUSH IMAGES */
+stage('Push to Nexus') {
     steps {
         container('dind') {
             sh '''
@@ -496,6 +496,7 @@ EOF
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
 
                 echo "Pushing images..."
+
                 docker push \
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
 
