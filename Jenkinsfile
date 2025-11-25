@@ -834,16 +834,17 @@ spec:
                 echo "Waiting for Docker daemon..."
                 sleep 15
 
-                echo "Logging in to Nexus (CLUSTER INTERNAL URL)..."
+                echo "Logging into Nexus (HTTP registry)..."
 
                 echo "Imcc@2025" | docker login \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
                     --username student \
-                    --password-stdin
+                    --password-stdin \
+                    http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
             '''
         }
     }
 }
+
 
 
 
