@@ -646,48 +646,57 @@ spec:
         /* ------------------------------ */
         /* 5. LOGIN TO NEXUS (HTTP + WORKING) */
         /* ------------------------------ */
-        stage('Login to Nexus Registry') {
-            steps {
-                container('dind') {
-                    sh '''
-                        echo "Starting Docker daemon..."
-                        dockerd-entrypoint.sh --storage-driver=overlay2 &
+        /* 5. LOGIN TO NEXUS */
+stage('Login to Nexus Registry') {
+    steps {
+        container('dind') {
+            sh '''
+                echo "Creating Docker config directory..."
+                mkdir -p /etc/docker
 
-                        echo "Waiting for Docker..."
-                        sleep 25
+                echo "Writing insecure registry config..."
+cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+}
+EOF
 
-                        echo "Logging into Nexus registry..."
-                        echo "Imcc@2025" | docker login \
-                           http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                           --username student \
-                           --password-stdin
-                    '''
-                }
-            }
+                echo "Starting Docker daemon..."
+                dockerd-entrypoint.sh --tls=false &
+
+                echo "Waiting for Docker daemon to start..."
+                sleep 30
+
+                echo "Logging into Nexus registry..."
+                echo "Imcc@2025" | docker login \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    --username student \
+                    --password-stdin
+            '''
         }
+    }
+}
 
-        /* ------------------------------ */
-        /* 6. PUSH TO NEXUS (WORKING) */
-        /* ------------------------------ */
-        stage('Push to Nexus') {
-            steps {
-                container('dind') {
-                    sh '''
-                        docker tag ecommerce-frontend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+/* 6. PUSH IMAGES */
+stage('Push to Nexus') {
+    steps {
+        container('dind') {
+            sh '''
+                echo "Tagging Docker images..."
 
-                        docker tag ecommerce-backend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                docker tag ecommerce-frontend:latest \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
 
-                        docker push \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+                docker tag ecommerce-backend:latest \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
 
-                        docker push \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
-                    '''
-                }
-            }
+                echo "Pushing Docker images to Nexus..."
+                docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+                docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+            '''
         }
+    }
+}
 
         /* ------------------------------ */
         /* 7. DEPLOY TO KUBERNETES */
