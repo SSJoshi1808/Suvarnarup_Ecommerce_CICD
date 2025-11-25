@@ -926,6 +926,7 @@ spec:
                 }
             }
         }
+    
 
        stage('Deploy to Kubernetes') {
     steps {
