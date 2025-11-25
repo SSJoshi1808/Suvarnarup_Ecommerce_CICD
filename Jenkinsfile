@@ -928,22 +928,46 @@ spec:
             }
         }
 
-       stage('Deploy to Kubernetes') {
+//        stage('Deploy to Kubernetes') {
+//     steps {
+//         container('kubectl') {
+
+//             sh '''
+//                 echo "======= Using kubeconfig ======="
+//                 ls -l /kube
+//                 cat /kube/config || true
+
+//                 echo "======= Applying Deployment ======="
+//                 kubectl apply -f k8s/deployment.yaml
+
+//                 echo "======= Applying Service ======="
+//                 kubectl apply -f k8s/service.yaml
+
+//                 echo "======= Checking Rollout ======="
+//                 kubectl rollout status deployment/ecommerce-frontend -n ecommerce --timeout=60s || true
+//                 kubectl rollout status deployment/ecommerce-backend -n ecommerce --timeout=60s || true
+
+//                 echo "======= Pods ======="
+//                 kubectl get pods -n ecommerce
+//             '''
+//         }
+//     }
+// }
+
+
+stage('Deploy to Kubernetes') {
     steps {
         container('kubectl') {
-
             sh '''
-                echo "======= Using kubeconfig ======="
+                echo "======= Checking kubeconfig ======="
                 ls -l /kube
-                cat /kube/config || true
+                cat /kube/config || echo "No kubeconfig!"
 
-                echo "======= Applying Deployment ======="
+                echo "======= Deploying ======="
                 kubectl apply -f k8s/deployment.yaml
-
-                echo "======= Applying Service ======="
                 kubectl apply -f k8s/service.yaml
 
-                echo "======= Checking Rollout ======="
+                echo "======= Rollout Status ======="
                 kubectl rollout status deployment/ecommerce-frontend -n ecommerce --timeout=60s || true
                 kubectl rollout status deployment/ecommerce-backend -n ecommerce --timeout=60s || true
 
@@ -953,6 +977,7 @@ spec:
         }
     }
 }
+
 
     }
 }
