@@ -842,16 +842,37 @@ spec:
     steps {
         container('dind') {
             sh '''
-                echo "Waiting for Docker daemon..."
-                sleep 10
+                echo "===== CONFIGURING DOCKER DAEMON ====="
+                mkdir -p /etc/docker
 
-                echo "Logging in to Nexus (HTTP registry)..."
-                docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                    -u student -p "Imcc@2025"
+                cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+}
+EOF
+
+                echo "===== STARTING DOCKER DAEMON WITH HTTP ONLY ====="
+                nohup dockerd \
+                  --host=tcp://0.0.0.0:2375 \
+                  --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                  --tls=false > /tmp/dockerd.log 2>&1 &
+
+                echo "===== WAITING FOR DOCKER ====="
+                sleep 25
+
+                echo "===== VERIFY DOCKER IS RUNNING ====="
+                docker --host=tcp://0.0.0.0:2375 info
+
+                echo "===== LOGGING IN TO NEXUS (HTTP) ====="
+                echo "Imcc@2025" | docker --host=tcp://0.0.0.0:2375 login \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    --username student \
+                    --password-stdin
             '''
         }
     }
 }
+
 
 
         /* 6. PUSH IMAGES TO NEXUS */
