@@ -453,35 +453,59 @@ spec:
         }
 
         /* 5. LOGIN TO NEXUS DOCKER REGISTRY */
-        stage('Login to Nexus Registry') {
-            steps {
-                container('dind') {
-                    sh '''
-                        echo "Changeme@2025" | docker login \
-                            nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                            --username admin --password-stdin
-                    '''
-                }
-            }
+  stage('Login to Nexus Registry') {
+    steps {
+        container('dind') {
+            sh '''
+                echo "Configuring Docker daemon for insecure registry..."
+
+cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+}
+EOF
+
+                echo "Starting Docker daemon..."
+                dockerd-entrypoint.sh --tls=false &
+
+                echo "Waiting for Docker..."
+                sleep 25
+
+                echo "Logging into Nexus (HTTP only)..."
+                echo "Changeme@2025" | docker login \
+                  --tls=false \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                  --username admin --password-stdin
+            '''
         }
+    }
+}
+
 
         /* 6. PUSH IMAGES */
         stage('Push to Nexus') {
-            steps {
-                container('dind') {
-                    sh '''
-                        docker tag ecommerce-frontend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+    steps {
+        container('dind') {
+            sh '''
+                echo "Tagging images..."
 
-                        docker tag ecommerce-backend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                docker tag ecommerce-frontend:latest \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
 
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
-                    '''
-                }
-            }
+                docker tag ecommerce-backend:latest \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+
+                echo "Pushing images..."
+                docker push \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+
+                docker push \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+            '''
         }
+    }
+}
+
 
         /* 7. DEPLOY */
         stage('Deploy to Kubernetes') {
