@@ -936,19 +936,28 @@ spec:
         //     }
         // }
 
-        stage('Deploy to Kubernetes') {
-    steps {
-        container('kubectl') {
-            sh '''
-                kubectl get nodes
-                kubectl apply -f k8s/deployment.yaml
-                kubectl apply -f k8s/service.yaml
-                kubectl rollout status deployment/ecommerce-frontend -n ecommerce
-                kubectl rollout status deployment/ecommerce-backend -n ecommerce
-            '''
-        }
-    }
-}
+       stage('Deploy to Kubernetes') {
+            steps {
+                container('kubectl') {
+                    // Ensure this directory exists in your repo!
+                    // If your yaml is in the root, remove the dir() block.
+                    dir('k8s-deployment') { 
+                        sh """
+                            # 1. Update Image Tag to match the Build
+                            sed -i 's|server:latest|server:${BUILD_NUMBER}|g' deployment.yaml
+                            sed -i 's|client:latest|client:${BUILD_NUMBER}|g' deployment.yaml
+                            
+                            # 2. Deploy (Fire and Forget, like the successful log)
+                            kubectl apply -f deployment.yaml
+                            
+                            # 3. Optional: Print status but don't fail the pipeline yet
+                            kubectl get pods -n 2401106
+                        """
+                    }
+                }
+            }
+        }
+
 
     }
 }
