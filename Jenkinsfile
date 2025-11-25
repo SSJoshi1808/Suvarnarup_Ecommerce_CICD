@@ -831,26 +831,19 @@ spec:
     steps {
         container('dind') {
             sh '''
-                echo "Configuring Docker for insecure HTTP registry..."
-                mkdir -p /etc/docker
-
-cat <<EOF > /etc/docker/daemon.json
-{
-  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
-}
-EOF
-
                 echo "Starting Docker daemon..."
-                dockerd --tls=false --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 > /tmp/docker.log 2>&1 &
+                dockerd --tls=false > /tmp/dockerd.log 2>&1 &
 
-                echo "Waiting for Docker..."
-                sleep 25
+                echo "Waiting for Docker to start..."
+                sleep 15
 
-                echo "Logging in (HTTP)..."
+                echo "Logging in to Nexus registry (HTTPS with insecure TLS)..."
+
                 echo "Imcc@2025" | docker login \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    nexus.imcc.com:8085 \
                     --username student \
-                    --password-stdin
+                    --password-stdin \
+                    --tls-verify=false
             '''
         }
     }
