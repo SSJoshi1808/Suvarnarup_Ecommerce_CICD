@@ -651,27 +651,31 @@ stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo "Creating Docker config directory..."
-                mkdir -p /etc/docker
+                echo "Using existing Docker daemon"
+
+                echo "Creating Docker client insecure registry directory..."
+                mkdir -p ~/.docker
 
                 echo "Writing insecure registry config..."
-cat <<EOF > /etc/docker/daemon.json
+cat <<EOF > ~/.docker/config.json
 {
-  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
+  "auths": {
+    "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085": {
+      "auth": "$(echo -n student:Imcc@2025 | base64)"
+    }
+  },
+  "insecure-registries": [
+    "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
+  ]
 }
 EOF
 
-                echo "Starting Docker daemon..."
-                dockerd-entrypoint.sh --tls=false &
+                echo "Logging in using HTTP..."
+                docker login \
+                  --username student \
+                  --password Imcc@2025 \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
 
-                echo "Waiting for Docker daemon to start..."
-                sleep 30
-
-                echo "Logging into Nexus registry..."
-                echo "Imcc@2025" | docker login \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                    --username student \
-                    --password-stdin
             '''
         }
     }
@@ -682,7 +686,7 @@ stage('Push to Nexus') {
     steps {
         container('dind') {
             sh '''
-                echo "Tagging Docker images..."
+                echo "Tagging images..."
 
                 docker tag ecommerce-frontend:latest \
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
@@ -690,7 +694,8 @@ stage('Push to Nexus') {
                 docker tag ecommerce-backend:latest \
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
 
-                echo "Pushing Docker images to Nexus..."
+                echo "Pushing images..."
+
                 docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
                 docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
             '''
