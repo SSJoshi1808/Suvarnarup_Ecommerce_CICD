@@ -827,44 +827,33 @@ spec:
             }
         }
 
-     stage('Login to Nexus Registry') {
-    steps {
-        container('dind') {
-            sh '''
-                echo "===== WAITING FOR DOCKER DAEMON ====="
-                sleep 20
-
-                echo "===== LOGGING INTO NEXUS (HTTPS, INSECURE TLS) ====="
-
-                echo "Imcc@2025" | docker login \
-                    https://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                    --username student \
-                    --password-stdin \
-                    --tls-verify=false
-            '''
-        }
-    }
-}
-
-
-
-
-
-        stage('Push to Nexus') {
+     /* 5. LOGIN TO NEXUS */
+        stage('Login to Nexus Registry') {
             steps {
                 container('dind') {
                     sh '''
+                        docker login http://nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                            -u student -p Imcc@2025
+                    '''
+                }
+            }
+        }
+
+        /* 6. PUSH IMAGES TO NEXUS */
+       stage('Push to Nexus') {
+            steps {
+                container('dind') {
+                    sh '''
+                        # Tag images correctly inside project folder
                         docker tag ecommerce-frontend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
 
                         docker tag ecommerce-backend:latest \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
 
-                        docker push \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
-
-                        docker push \
-                          nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                        # Push to Nexus registry
+                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
                     '''
                 }
             }
