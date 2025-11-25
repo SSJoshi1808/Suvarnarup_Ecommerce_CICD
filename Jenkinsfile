@@ -923,41 +923,31 @@ spec:
             }
         }
 
-        // stage('Deploy to Kubernetes') {
-        //     steps {
-        //         container('kubectl') {
-        //             sh '''
-        //                 kubectl apply -f k8s/deployment.yaml
-        //                 kubectl apply -f k8s/service.yaml
-        //                 kubectl rollout status deployment/ecommerce-frontend -n ecommerce
-        //                 kubectl rollout status deployment/ecommerce-backend -n ecommerce
-        //             '''
-        //         }
-        //     }
-        // }
-
        stage('Deploy to Kubernetes') {
-            steps {
-                container('kubectl') {
-                    // Ensure this directory exists in your repo!
-                    // If your yaml is in the root, remove the dir() block.
-                    dir('k8s-deployment') { 
-                        sh """
-                            # 1. Update Image Tag to match the Build
-                            sed -i 's|server:latest|server:${BUILD_NUMBER}|g' deployment.yaml
-                            sed -i 's|client:latest|client:${BUILD_NUMBER}|g' deployment.yaml
-                            
-                            # 2. Deploy (Fire and Forget, like the successful log)
-                            kubectl apply -f deployment.yaml
-                            
-                            # 3. Optional: Print status but don't fail the pipeline yet
-                            kubectl get pods -n 2401106
-                        """
-                    }
-                }
-            }
-        
+    steps {
+        container('kubectl') {
 
+            sh '''
+                echo "======= Using kubeconfig ======="
+                ls -l /kube
+                cat /kube/config || true
+
+                echo "======= Applying Deployment ======="
+                kubectl apply -f k8s/deployment.yaml
+
+                echo "======= Applying Service ======="
+                kubectl apply -f k8s/service.yaml
+
+                echo "======= Checking Rollout ======="
+                kubectl rollout status deployment/ecommerce-frontend -n ecommerce --timeout=60s || true
+                kubectl rollout status deployment/ecommerce-backend -n ecommerce --timeout=60s || true
+
+                echo "======= Pods ======="
+                kubectl get pods -n ecommerce
+            '''
+        }
+    }
+}
 
     }
 }
