@@ -796,10 +796,14 @@ spec:
     command: ['cat']
     tty: true
 
-  - name: kubectl
+ 
+
+   - name: kubectl
     image: bitnami/kubectl:latest
-    command: ['cat']
+    command: ["cat"]
     tty: true
+    securityContext:
+      runAsUser: 0
     env:
     - name: KUBECONFIG
       value: /kube/config
@@ -807,6 +811,7 @@ spec:
     - name: kubeconfig-secret
       mountPath: /kube/config
       subPath: kubeconfig
+    
 
   - name: dind
     image: docker:dind
