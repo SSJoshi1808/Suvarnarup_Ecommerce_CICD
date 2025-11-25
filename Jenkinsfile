@@ -827,28 +827,23 @@ spec:
             }
         }
 
-      stage('Login to Nexus Registry') {
+     stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo "Starting Docker daemon..."
-                dockerd --tls=false > /tmp/dockerd.log 2>&1 &
-
-                echo "Waiting for Docker to start..."
+                echo "Waiting for Docker daemon..."
                 sleep 15
 
-                echo "Logging in to Nexus registry (HTTPS with insecure TLS)..."
+                echo "Logging into Nexus (External URL)..."
 
                 echo "Imcc@2025" | docker login \
-                    nexus.imcc.com:8085 \
+                    nexus.imcc.com:5000 \
                     --username student \
-                    --password-stdin \
-                    --tls-verify=false
+                    --password-stdin
             '''
         }
     }
 }
-
 
 
 
