@@ -454,11 +454,11 @@ spec:
 
         /* 5. LOGIN TO NEXUS DOCKER REGISTRY */
   /* 5. LOGIN TO NEXUS */
-stage('Login to Nexus Registry') {
+    stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo "Configuring Docker daemon for insecure registry..."
+                echo "Configuring Docker daemon for insecure HTTP registry..."
 
 cat <<EOF > /etc/docker/daemon.json
 {
@@ -469,18 +469,19 @@ EOF
                 echo "Starting Docker daemon..."
                 dockerd-entrypoint.sh --tls=false --insecure-registry nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 &
 
-                echo "Waiting for Docker..."
-                sleep 30
+                echo "Waiting for Docker daemon..."
+                sleep 35
 
                 echo "Logging into Nexus using HTTP..."
                 echo "Imcc@2025" | docker login \
-                    --username student \
-                    --password-stdin \
-                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    --username admin \
+                    --password-stdin
             '''
         }
     }
 }
+
 
 /* 6. PUSH IMAGES */
 stage('Push to Nexus') {
@@ -495,6 +496,7 @@ stage('Push to Nexus') {
                 docker tag ecommerce-backend:latest \
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
 
+
                 echo "Pushing images..."
 
                 docker push \
@@ -506,6 +508,7 @@ stage('Push to Nexus') {
         }
     }
 }
+
 
 
         /* 7. DEPLOY */
