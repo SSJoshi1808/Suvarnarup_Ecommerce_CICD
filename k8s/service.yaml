@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ecommerce-service
-  namespace: 2401080
+  namespace: "2401080"
 spec:
   type: NodePort
   selector:
