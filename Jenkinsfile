@@ -727,6 +727,56 @@
 
 
 //trial 2
+// pipeline {
+//     agent {
+//         kubernetes {
+//             yaml '''
+// apiVersion: v1
+// kind: Pod
+// spec:
+//   containers:
+
+//   - name: node
+//     image: mirror.gcr.io/library/node:20
+//     command: ['cat']
+//     tty: true
+
+//   - name: sonar-scanner
+//     image: sonarsource/sonar-scanner-cli
+//     command: ['cat']
+//     tty: true
+
+//   - name: kubectl
+//     image: bitnami/kubectl:latest
+//     command: ['cat']
+//     tty: true
+//     env:
+//     - name: KUBECONFIG
+//       value: /kube/config
+//     volumeMounts:
+//     - name: kubeconfig-secret
+//       mountPath: /kube/config
+//       subPath: kubeconfig
+
+//   - name: dind
+//     image: docker:dind
+//     args: ["--storage-driver=overlay2"]
+//     securityContext:
+//       privileged: true
+//     env:
+//     - name: DOCKER_TLS_CERTDIR
+//       value: ""
+//     - name: DOCKER_OPTS
+//       value: "--insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
+
+//   volumes:
+//   - name: kubeconfig-secret
+//     secret:
+//       secretName: kubeconfig-secret
+// '''
+//         }
+//     }
+
 pipeline {
     agent {
         kubernetes {
@@ -760,14 +810,14 @@ spec:
 
   - name: dind
     image: docker:dind
-    args: ["--storage-driver=overlay2"]
+    args:
+      - "--storage-driver=overlay2"
+      - "--insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
     securityContext:
       privileged: true
     env:
     - name: DOCKER_TLS_CERTDIR
       value: ""
-    - name: DOCKER_OPTS
-      value: "--insecure-registry=nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
 
   volumes:
   - name: kubeconfig-secret
@@ -776,6 +826,7 @@ spec:
 '''
         }
     }
+
 
     stages {
 
