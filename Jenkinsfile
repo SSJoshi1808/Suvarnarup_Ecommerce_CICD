@@ -798,7 +798,7 @@ spec:
 
  
 
-   - name: kubectl
+  - name: kubectl
     image: bitnami/kubectl:latest
     command: ["cat"]
     tty: true
