@@ -797,16 +797,20 @@ spec:
     tty: true
 
   - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ['cat']
+    image: lachlanevenson/k8s-kubectl:latest
+    command:
+      - sh
+      - -c
+      - cat
     tty: true
     env:
-    - name: KUBECONFIG
-      value: /kube/config
+      - name: KUBECONFIG
+        value: /kube/config
     volumeMounts:
-    - name: kubeconfig-secret
-      mountPath: /kube/config
-      subPath: kubeconfig
+      - name: kubeconfig-secret
+        mountPath: /kube/config
+        subPath: kubeconfig
+
 
   - name: dind
     image: docker:dind
@@ -926,7 +930,6 @@ spec:
        stage('Deploy to Kubernetes') {
     steps {
         container('kubectl') {
-
             sh '''
                 echo "======= Using kubeconfig ======="
                 ls -l /kube
@@ -938,7 +941,7 @@ spec:
                 echo "======= Applying Service ======="
                 kubectl apply -f k8s/service.yaml
 
-                echo "======= Checking Rollout ======="
+                echo "======= Rollout Status ======="
                 kubectl rollout status deployment/ecommerce-frontend -n ecommerce --timeout=60s || true
                 kubectl rollout status deployment/ecommerce-backend -n ecommerce --timeout=60s || true
 
@@ -946,8 +949,9 @@ spec:
                 kubectl get pods -n ecommerce
             '''
         }
+    }
 }
-}
+
 
 }
 }
