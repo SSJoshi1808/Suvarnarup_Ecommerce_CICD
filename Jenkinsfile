@@ -796,30 +796,17 @@ spec:
     command: ['cat']
     tty: true
 
-// /*   - name: kubectl
-// //     image: bitnami/kubectl:latest
-// //     command: ['cat']
-// //     tty: true
-// //     env:
-// //     - name: KUBECONFIG
-// //       value: /kube/config
-// //     volumeMounts:
-// //     - name: kubeconfig-secret
-// //       mountPath: /kube/config
-// //       subPath: kubeconfig*/
-
-- name: kubectl
-  image: bitnami/kubectl:latest
-  command: ['sleep', '999999']   # keeps the pod alive
-  tty: true
-  env:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ['cat']
+    tty: true
+    env:
     - name: KUBECONFIG
       value: /kube/config
-  volumeMounts:
+    volumeMounts:
     - name: kubeconfig-secret
       mountPath: /kube/config
-      subPath: kubeconfig        # IMPORTANT: map file → file
-
+      subPath: kubeconfig
 
   - name: dind
     image: docker:dind
