@@ -647,35 +647,35 @@ spec:
         /* 5. LOGIN TO NEXUS (HTTP + WORKING) */
         /* ------------------------------ */
         /* 5. LOGIN TO NEXUS */
+/* 5. LOGIN TO NEXUS (FINAL WORKING SOLUTION) */
 stage('Login to Nexus Registry') {
     steps {
         container('dind') {
             sh '''
-                echo "Using existing Docker daemon"
+                echo "Fixing Docker daemon for HTTP Nexus registry..."
 
-                echo "Creating Docker client insecure registry directory..."
-                mkdir -p ~/.docker
+                # Create config folder
+                mkdir -p /etc/docker
 
-                echo "Writing insecure registry config..."
-cat <<EOF > ~/.docker/config.json
+                # Write insecure registry configuration
+                cat <<EOF >/etc/docker/daemon.json
 {
-  "auths": {
-    "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085": {
-      "auth": "$(echo -n student:Imcc@2025 | base64)"
-    }
-  },
-  "insecure-registries": [
-    "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
-  ]
+  "insecure-registries": ["nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"]
 }
 EOF
 
-                echo "Logging in using HTTP..."
-                docker login \
-                  --username student \
-                  --password Imcc@2025 \
-                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085
+                echo "Restarting Docker daemon (DinD internal)..."
+                pkill dockerd || true
+                dockerd &
 
+                echo "Waiting for dockerd to fully start..."
+                sleep 20
+
+                echo "Logging into Nexus..."
+                echo "Imcc@2025" | docker login \
+                    nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                    --username student \
+                    --password-stdin
             '''
         }
     }
@@ -686,7 +686,7 @@ stage('Push to Nexus') {
     steps {
         container('dind') {
             sh '''
-                echo "Tagging images..."
+                echo "Tagging images for Nexus..."
 
                 docker tag ecommerce-frontend:latest \
                   nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
@@ -696,8 +696,11 @@ stage('Push to Nexus') {
 
                 echo "Pushing images..."
 
-                docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
-                docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                docker push \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+
+                docker push \
+                  nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
             '''
         }
     }
