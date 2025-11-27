@@ -14,9 +14,7 @@
 
 
 
-# ============================================================
 # FRONTEND SERVICE
-# ============================================================
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,12 +27,10 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 32000   # frontend access
+      nodePort: 32000
 
 ---
-# ============================================================
 # BACKEND SERVICE
-# ============================================================
 apiVersion: v1
 kind: Service
 metadata:
@@ -47,4 +43,4 @@ spec:
   ports:
     - port: 5000
       targetPort: 5000
-      nodePort: 32001   # backend access
+      nodePort: 32001
