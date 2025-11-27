@@ -908,24 +908,50 @@ spec:
 
 
         /* 6. PUSH IMAGES TO NEXUS */
+    //    stage('Push to Nexus') {
+    //         steps {
+    //             container('dind') {
+    //                 sh '''
+    //                     # Tag images correctly inside project folder
+    //                     docker tag ecommerce-frontend:latest \
+    //                     nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+
+    //                     docker tag ecommerce-backend:latest \
+    //                     nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+
+    //                     # Push to Nexus registry
+    //                     docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+    //                     docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+    //                 '''
+    //             }
+    //         }
+    //     }
+
+
+
+    //test
+    /* 6. PUSH IMAGES TO NEXUS */
        stage('Push to Nexus') {
-            steps {
-                container('dind') {
-                    sh '''
-                        # Tag images correctly inside project folder
-                        docker tag ecommerce-frontend:latest \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
+           steps {
+               container('dind') {
+                   sh '''
+                         docker tag ecommerce-frontend:latest \
+                 nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
 
-                        docker tag ecommerce-backend:latest \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
+               docker tag ecommerce-backend:latest \
+               nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
 
-                        # Push to Nexus registry
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
-                    '''
-                }
-            }
-        }
+               docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
+
+               docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
+
+                     '''
+                 }
+           }
+         }
+
+
+    
     
 
        stage('Deploy to Kubernetes') {
