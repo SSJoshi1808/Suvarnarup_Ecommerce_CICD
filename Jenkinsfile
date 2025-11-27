@@ -914,14 +914,14 @@ spec:
                     sh '''
                         # Tag images correctly inside project folder
                         docker tag ecommerce-frontend:latest \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
+                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
 
                         docker tag ecommerce-backend:latest \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
 
                         # Push to Nexus registry
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
-                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-frontend:v1
+                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/my-repository/shreya_joshi_repo/ecommerce-backend:v1
                     '''
                 }
             }
