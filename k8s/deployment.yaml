@@ -123,7 +123,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ecommerce-backend
-  namespace: ecommerce
+  namespace: "2401080"
 spec:
   replicas: 1
   selector:

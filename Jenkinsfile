@@ -470,11 +470,11 @@ spec:
                 kubectl apply -f k8s/service.yaml
 
                 echo "======= Rollout Status ======="
-                kubectl rollout status deployment/ecommerce-frontend -n ecommerce --timeout=60s || true
-                kubectl rollout status deployment/ecommerce-backend -n ecommerce --timeout=60s || true
+                kubectl rollout status deployment/ecommerce-frontend -n 2401080 --timeout=60s || true
+                kubectl rollout status deployment/ecommerce-backend -n 2401080 --timeout=60s || true
 
                 echo "======= Pods ======="
-                kubectl get pods -n ecommerce
+                kubectl get pods -n 2401080
             '''
         }
     }
