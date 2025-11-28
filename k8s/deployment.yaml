@@ -63,13 +63,13 @@ spec:
     spec:
       containers:
         - name: ecommerce-frontend
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
 
-      # imagePullSecrets:
-      #  - name: nexus-secret
+      imagePullSecrets:
+       - name: nexus-secret
 
 # ========================================
 # BACKEND DEPLOYMENT
@@ -136,7 +136,7 @@ spec:
     spec:
       containers:
         - name: ecommerce-backend
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
@@ -150,6 +150,6 @@ spec:
             - name: NODE_ENV
               value: "production"
 
-      # imagePullSecrets:
-      #  - name: nexus-secret
+      imagePullSecrets:
+       - name: nexus-secret
 
