@@ -50,7 +50,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ecommerce-frontend
-  namespace: ecommerce
+  namespace: "2401080"
 spec:
   replicas: 1
   selector:
