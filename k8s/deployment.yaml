@@ -8,10 +8,10 @@
 # ========================================
 # CREATE NAMESPACE (INLINE)
 # ========================================
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: "2401080"
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "2401080"
 
 ---
 # ========================================
