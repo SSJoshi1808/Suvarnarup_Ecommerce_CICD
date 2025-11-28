@@ -49,98 +49,15 @@
 # ========================================
 # CREATE NAMESPACE (INLINE)
 # ========================================
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: ecommerce
-
-# ---
-# # ========================================
-# # FRONTEND DEPLOYMENT
-# # ========================================
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: ecommerce-frontend
-#   namespace: ecommerce
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: ecommerce-frontend
-#   template:
-#     metadata:
-#       labels:
-#         app: ecommerce-frontend
-#     spec:
-#       containers:
-#         - name: ecommerce-frontend
-#           #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
-#           image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
-
-#           #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
-#           imagePullPolicy: Always
-#           ports:
-#             - containerPort: 3000
-
-# ---
-# # ========================================
-# # BACKEND DEPLOYMENT
-# # ========================================
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: ecommerce-backend
-#   namespace: ecommerce
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: ecommerce-backend
-#   template:
-#     metadata:
-#       labels:
-#         app: ecommerce-backend
-#     spec:
-#       containers:
-#         - name: ecommerce-backend
-#           #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
-#           image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
-
-#           #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
-
-#           imagePullPolicy: Always
-#           ports:
-#             - containerPort: 5000
-
-#           env:
-#             - name: MONGO_URI
-#               value: "mongodb+srv://prajaktajoshi2003:JglbBmZqEmw5myKp@cluster0.on4cy.mongodb.net/suvarnarup?retryWrites=true&w=majority&appName=Cluster0"
-
-#             - name: JWT_SECRET
-#               value: "0893d61211e0c9beed3d44697bc27342c7e1bef0a5fd6a94c357c5aa52a1f06d92b49a66ffc7f4469314928d2fca66552af49a9c902f642451d5382b701c996d"
-
-#             - name: PAYMENT_KEY
-#               value: "AZ6NPLpcyJ8y-V7AgbDrUplQ3Z5RjW_nkEaATaR_ow9O2OqbEqNXO84iIGoA2UL0iU9IkXfIy2UUcl"
-
-#             - name: NODE_ENV
-#               value: "production"
-
-
-
-
-
-#test
 apiVersion: v1
 kind: Namespace
 metadata:
   name: ecommerce
 
 ---
-
-# ===========================
+# ========================================
 # FRONTEND DEPLOYMENT
-# ===========================
+# ========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -156,20 +73,20 @@ spec:
       labels:
         app: ecommerce-frontend
     spec:
-      imagePullSecrets:
-        - name: nexus-secret
       containers:
         - name: ecommerce-frontend
-          image: nexus.imcc.com:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
+          #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-frontend:v1
+
+          #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-frontend:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
 
 ---
-
-# ===========================
+# ========================================
 # BACKEND DEPLOYMENT
-# ===========================
+# ========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -185,14 +102,17 @@ spec:
       labels:
         app: ecommerce-backend
     spec:
-      imagePullSecrets:
-        - name: nexus-secret
       containers:
         - name: ecommerce-backend
-          image: nexus.imcc.com:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
+          #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/shreya_joshi_repo/ecommerce-backend:v1
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
+
+          #image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/repository/shreya_joshi_repo/ecommerce-backend:v1
+
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
+
           env:
             - name: MONGO_URI
               value: "mongodb+srv://prajaktajoshi2003:JglbBmZqEmw5myKp@cluster0.on4cy.mongodb.net/suvarnarup?retryWrites=true&w=majority&appName=Cluster0"
