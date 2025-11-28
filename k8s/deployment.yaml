@@ -8,10 +8,10 @@
 # ========================================
 # CREATE NAMESPACE (INLINE)
 # ========================================
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ecommerce
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: "2401080"
 
 ---
 # ========================================
@@ -58,7 +58,7 @@ spec:
       app: ecommerce-frontend
   template:
     metadata:
-      labels:
+      labels
         app: ecommerce-frontend
     spec:
       containers:
