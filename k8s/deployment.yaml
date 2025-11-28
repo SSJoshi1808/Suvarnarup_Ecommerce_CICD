@@ -68,8 +68,8 @@ spec:
           ports:
             - containerPort: 3000
 
-      imagePullSecrets:
-       - name: nexus-secret
+      # imagePullSecrets:
+      #  - name: nexus-secret
 
 # ========================================
 # BACKEND DEPLOYMENT
@@ -150,6 +150,6 @@ spec:
             - name: NODE_ENV
               value: "production"
 
-      imagePullSecrets:
-       - name: nexus-secret
+      # imagePullSecrets:
+      #  - name: nexus-secret
 
