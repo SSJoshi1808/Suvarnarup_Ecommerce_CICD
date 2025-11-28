@@ -58,7 +58,7 @@ spec:
       app: ecommerce-frontend
   template:
     metadata:
-      labels
+      labels:
         app: ecommerce-frontend
     spec:
       containers:
