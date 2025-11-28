@@ -78,6 +78,38 @@
 
 
 
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ecommerce-ingress
+#   namespace: "2401080"
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#     - host: suvarnarup-ecommerce.imcc.com
+
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: ecommerce-frontend-service
+#                 port:
+#                   number: 3000
+
+#           - path: /api
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: ecommerce-backend-service
+#                 port:
+#                   number: 5000
+
+
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -89,7 +121,6 @@ spec:
   ingressClassName: nginx
   rules:
     - host: suvarnarup-ecommerce.imcc.com
-
       http:
         paths:
           - path: /
@@ -107,4 +138,3 @@ spec:
                 name: ecommerce-backend-service
                 port:
                   number: 5000
-
