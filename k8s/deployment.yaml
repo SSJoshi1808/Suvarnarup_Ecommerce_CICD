@@ -1,18 +1,15 @@
-
-
-#working
-
-# ============================================================
-# FRONTEND DEPLOYMENT
-# ============================================================
 # ========================================
-# CREATE NAMESPACE (INLINE)
+# CREATE NAMESPACE
 # ========================================
 apiVersion: v1
 kind: Namespace
 metadata:
   name: "2401080"
 
+---
+# ========================================
+# FRONTEND DEPLOYMENT
+# ========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,14 +31,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-
       imagePullSecrets:
         - name: nexus-secret
 
-
-
-
-#9:42
+---
+# ========================================
+# BACKEND DEPLOYMENT
+# ========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -72,7 +68,83 @@ spec:
               value: "AZ6NPLpcyJ8y-V7AgbDrUplQ3Z5RjW_nkEaATaR_ow9O2OqbEqNXO84iIGoA2UL0iU9IkXfIy2UUcl"
             - name: NODE_ENV
               value: "production"
-
       imagePullSecrets:
-       - name: nexus-secret
+        - name: nexus-secret
+
+
+# #working
+
+# # ============================================================
+# # FRONTEND DEPLOYMENT
+# # ============================================================
+# # ========================================
+# # CREATE NAMESPACE (INLINE)
+# # ========================================
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: "2401080"
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: ecommerce-frontend
+#   namespace: "2401080"
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: ecommerce-frontend
+#   template:
+#     metadata:
+#       labels:
+#         app: ecommerce-frontend
+#     spec:
+#       containers:
+#         - name: ecommerce-frontend
+#           image: 127.0.0.1:30085/shreya_joshi_repo/ecommerce-frontend:v1
+#           imagePullPolicy: Always
+#           ports:
+#             - containerPort: 3000
+
+#       imagePullSecrets:
+#         - name: nexus-secret
+
+
+
+
+# #9:42
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: ecommerce-backend
+#   namespace: "2401080"
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: ecommerce-backend
+#   template:
+#     metadata:
+#       labels:
+#         app: ecommerce-backend
+#     spec:
+#       containers:
+#         - name: ecommerce-backend
+#           image: 127.0.0.1:30085/shreya_joshi_repo/ecommerce-backend:v1
+#           imagePullPolicy: Always
+#           ports:
+#             - containerPort: 5000
+#           env:
+#             - name: MONGO_URI
+#               value: "mongodb+srv://prajaktajoshi2003:JglbBmZqEmw5myKp@cluster0.on4cy.mongodb.net/suvarnarup"
+#             - name: JWT_SECRET
+#               value: "0893d61211e0c9beed3d44697bc27342c7e1bef0a5fd6a94c357c5aa52a1f06d92b49a66ffc7f4469314928d2fca66552af49a9c902f642451d5382b701c996d"
+#             - name: PAYMENT_KEY
+#               value: "AZ6NPLpcyJ8y-V7AgbDrUplQ3Z5RjW_nkEaATaR_ow9O2OqbEqNXO84iIGoA2UL0iU9IkXfIy2UUcl"
+#             - name: NODE_ENV
+#               value: "production"
+
+#       imagePullSecrets:
+#        - name: nexus-secret
 
