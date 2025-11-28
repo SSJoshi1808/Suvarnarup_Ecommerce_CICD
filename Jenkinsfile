@@ -884,6 +884,26 @@ spec:
             }
         }
 
+         stage('Create ImagePull Secret') {
+            steps {
+                container('kubectl') {
+                    sh '''
+                        echo "Creating/Updating nexus-secret..."
+
+                        kubectl delete secret nexus-secret -n ecommerce --ignore-not-found=true
+
+                        kubectl create secret docker-registry nexus-secret \
+                          --docker-server= nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
+                          --docker-username=student \
+                          --docker-password=Imcc@2025 \
+                          -n ecommerce
+
+                        echo "Secret created successfully!"
+                    '''
+                }
+            }
+        }
+
      /* 5. LOGIN TO NEXUS */
         // stage('Login to Nexus Registry') {
         //     steps {
