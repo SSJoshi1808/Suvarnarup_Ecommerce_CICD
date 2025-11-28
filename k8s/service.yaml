@@ -88,7 +88,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: suvarnarup_ecommerce.imcc.com
+    - host: suvarnarup-ecommerce.imcc.com
+
       http:
         paths:
           - path: /
