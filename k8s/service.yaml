@@ -227,6 +227,7 @@ spec:
                 name: ecommerce-frontend-service
                 port:
                   number: 80
+                  
 
           - path: /api
             pathType: Prefix
@@ -235,3 +236,4 @@ spec:
                 name: ecommerce-backend-service
                 port:
                   number: 9000
+                  targetPort: 9000
