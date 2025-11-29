@@ -64,7 +64,7 @@ export const fetchBestSeller = createAsyncThunk(
   "products/fetchBestSeller",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`);
+      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/api/products/best-seller`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: "Failed to fetch best seller" });
