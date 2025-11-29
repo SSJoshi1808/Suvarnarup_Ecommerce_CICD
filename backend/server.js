@@ -91,7 +91,7 @@ if (!process.env.MONGO_URL) {
 const app = express();
 
 // ✅ Configure CORS correctly
-const allowedOrigins = ["http://localhost:3000","http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:5173", "http://localhost:5174","http://suvarnarup-ecommerce.imcc.com"];
 
 app.use(cors({
   origin: function (origin, callback) {
