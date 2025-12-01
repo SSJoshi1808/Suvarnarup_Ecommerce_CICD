@@ -108,7 +108,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
+        `http://suvarnarup-ecommerce.imcc.com/api/users/login`,
         userData
       );
 
@@ -133,7 +133,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/register`,
+        `http://suvarnarup-ecommerce.imcc.com/api/users/register`,
         userData
       );
 

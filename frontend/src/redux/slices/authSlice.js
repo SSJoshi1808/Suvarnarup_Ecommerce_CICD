@@ -421,7 +421,7 @@ const initialState = {
   isAuthenticated: !!userFromStorage,
 };
 
-const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/users`;
+const API_URL = `http://suvarnarup-ecommerce.imcc.com/api/users`;
 
 // **Login user**
 export const loginUser = createAsyncThunk(
