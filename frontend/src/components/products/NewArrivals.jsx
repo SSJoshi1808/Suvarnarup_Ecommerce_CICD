@@ -113,7 +113,7 @@ const NewArrivals = () => {
     useEffect(() => {
         const fetchNewArrivals = async () => {
             try {
-                const response = await axios.get('http://localhost:9001/api/products/new-arrivals');
+                const response = await axios.get('http://suvarnarup-ecommerce.imcc.com/api/products/new-arrivals');
                 setNewArrivals(response.data || []);
             } catch (error) {
                 console.error("Failed to fetch new arrivals:", error);
