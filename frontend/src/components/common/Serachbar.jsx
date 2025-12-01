@@ -23,7 +23,7 @@ const Serachbar = () => {
         
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:9001/api/products/search?q=${encodeURIComponent(searchTerm)}`);
+            const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/search?q=${encodeURIComponent(searchTerm)}`);
             setSearchResults(response.data || []);
         } catch (error) {
             console.error('Search error:', error);
