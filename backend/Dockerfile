@@ -52,7 +52,7 @@ WORKDIR /app
 COPY --from=builder /app /app
 
 # Expose backend port
-EXPOSE 9001
+EXPOSE 9000
 
 # Start server
 CMD ["node", "server.js"]
