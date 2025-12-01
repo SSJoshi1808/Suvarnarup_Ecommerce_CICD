@@ -1,1 +1,1 @@
-export const API = "http://suvarnarup-ecommerce.imcc.com";
+export const API = "http://suvarnarup-ecommerce.imcc.com/api";

@@ -286,7 +286,8 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API } from "../../config/api";   // <-- using fixed backend URL
+import { API } from "../../config/api";
+import {API} from "../config/"  // <-- using fixed backend URL
 
 // ==============================
 // Fetch products with filters
