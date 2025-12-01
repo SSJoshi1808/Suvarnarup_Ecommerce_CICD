@@ -179,83 +179,85 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-//const API = import.meta.env.VITE_BACKEND_URL;
+const API = "http://suvarnarup-ecommerce.imcc.com/api";
 
-// ------------------ Thunks ------------------ //
-
-// Fetch products with filters
-export const featchProductsByFilters = createAsyncThunk(
-  "products/featchByFilters",
+/* ---------------- FETCH FILTERED PRODUCTS ---------------- */
+export const fetchProductsByFilters = createAsyncThunk(
+  "products/fetchByFilters",
   async (filters, { rejectWithValue }) => {
     try {
       const query = new URLSearchParams(filters).toString();
-      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products?${query}`);
+      const response = await axios.get(`${API}/products?${query}`);
       return response.data;
     } catch (error) {
-      console.error("❌ featchProductsByFilters error:", error);
-      return rejectWithValue(error.response?.data || { message: "Failed to fetch products" });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch products" }
+      );
     }
   }
 );
 
-// Fetch single product by ID
-export const featchProductDetails = createAsyncThunk(
-  "products/featchProductDetails",
+/* ---------------- FETCH PRODUCT DETAILS ---------------- */
+export const fetchProductDetails = createAsyncThunk(
+  "products/fetchProductDetails",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/${id}`);
+      const response = await axios.get(`${API}/products/${id}`);
       return response.data;
     } catch (error) {
-      console.error("❌ featchProductDetails error:", error);
-      return rejectWithValue(error.response?.data || { message: "Failed to fetch product details" });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch product details" }
+      );
     }
   }
 );
 
-// Fetch similar products
-export const featchSimilarProducts = createAsyncThunk(
-  "products/featchSimilarProducts",
+/* ---------------- FETCH SIMILAR PRODUCTS ---------------- */
+export const fetchSimilarProducts = createAsyncThunk(
+  "products/fetchSimilarProducts",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/similar/${id}`);
+      const response = await axios.get(`${API}/products/similar/${id}`);
       return response.data;
     } catch (error) {
-      console.error("❌ featchSimilarProducts error:", error);
-      return rejectWithValue(error.response?.data || { message: "Failed to fetch similar products" });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch similar products" }
+      );
     }
   }
 );
 
-// ✅ Fetch new arrivals
+/* ---------------- FETCH NEW ARRIVALS ---------------- */
 export const fetchNewArrivals = createAsyncThunk(
   "products/fetchNewArrivals",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/new-arrivals`);
+      const response = await axios.get(`${API}/products/new-arrivals`);
       return response.data;
     } catch (error) {
-      console.error("❌ fetchNewArrivals error:", error);
-      return rejectWithValue(error.response?.data || { message: "Failed to fetch new arrivals" });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch new arrivals" }
+      );
     }
   }
 );
 
-// ✅ Fetch best seller
+/* ---------------- FETCH BEST SELLERS ---------------- */
 export const fetchBestSeller = createAsyncThunk(
   "products/fetchBestSeller",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://suvarnarup-ecommerce.imcc.com/api/products/best-seller`);
+      const response = await axios.get(`${API}/products/best-seller`);
       return response.data;
     } catch (error) {
-      console.error("❌ fetchBestSeller error:", error);
-      return rejectWithValue(error.response?.data || { message: "Failed to fetch best sellers" });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch best sellers" }
+      );
     }
   }
 );
 
-// ------------------ Slice ------------------ //
-
+/* ---------------- SLICE ---------------- */
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -267,26 +269,33 @@ const productSlice = createSlice({
     loading: false,
     error: null,
   },
+
   reducers: {},
+
   extraReducers: (builder) => {
     builder
-      // filters
-      .addCase(featchProductsByFilters.fulfilled, (state, action) => {
-        state.products = action.payload;
+
+      /* FILTER PRODUCTS */
+      .addCase(fetchProductsByFilters.fulfilled, (state, action) => {
+        state.products = action.payload || [];
       })
-      // product details
-      .addCase(featchProductDetails.fulfilled, (state, action) => {
+
+      /* PRODUCT DETAILS */
+      .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
       })
-      // similar
-      .addCase(featchSimilarProducts.fulfilled, (state, action) => {
+
+      /* SIMILAR PRODUCTS */
+      .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
         state.similarProducts = action.payload;
       })
-      // new arrivals
+
+      /* NEW ARRIVALS */
       .addCase(fetchNewArrivals.fulfilled, (state, action) => {
         state.newArrivals = action.payload;
       })
-      // best seller
+
+      /* BEST SELLERS */
       .addCase(fetchBestSeller.fulfilled, (state, action) => {
         state.bestSellers = action.payload;
       });
