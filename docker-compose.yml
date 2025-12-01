@@ -8,14 +8,25 @@ services:
       - ./backend/.env
 
   frontend:
-    build:
-      context: ./frontend
-    container_name: mern-frontend
-    ports:
-      - "3000:80"
-    environment:  
-      #- VITE_BACKEND_URL=http://localhost:9001
-      - VITE_BACKEND_URL=http://suvarnarup-ecommerce.imcc.com
-    depends_on:
-      - backend
-    restart: always
+      build:
+        context: ./frontend
+        args:
+          - VITE_BACKEND_URL=http://suvarnarup-ecommerce.imcc.com
+      container_name: mern-frontend
+      ports:
+        - "3000:80"
+      restart: always
+   
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: mern-frontend
+  #   ports:
+  #     - "3000:80"
+  #   environment:  
+  #     #- VITE_BACKEND_URL=http://localhost:9001
+  #     - VITE_BACKEND_URL=http://suvarnarup-ecommerce.imcc.com
+  #   depends_on:
+  #     - backend
+  #   restart: always
