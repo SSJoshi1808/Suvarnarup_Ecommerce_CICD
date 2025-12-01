@@ -99,125 +99,290 @@
 //     );
 // // };
 
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+// import axios from 'axios';
+// import React, { useEffect, useRef, useState } from 'react';
+// import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+// import { Link } from 'react-router-dom';
+
+// const NewArrivals = () => {
+//     const scrollRef = useRef(null);
+//     const [canScrollLeft, setCanScrollLeft] = useState(false);
+//     const [canScrollRight, setCanScrollRight] = useState(true);
+//     const [newArrivals, setNewArrivals] = useState([]);
+
+//     useEffect(() => {
+//         const fetchNewArrivals = async () => {
+//             try {
+//                 const response = await axios.get('http://suvarnarup-ecommerce.imcc.com/api/products/new-arrivals');
+//                 setNewArrivals(response.data || []);
+//             } catch (error) {
+//                 console.error("Failed to fetch new arrivals:", error);
+//             }
+//         };
+//         fetchNewArrivals();
+//     }, []);
+
+//     const updateScrollButtons = () => {
+//         const container = scrollRef.current;
+//         if (!container) return;
+//         setCanScrollLeft(container.scrollLeft > 0);
+//         setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth);
+//     };
+
+//     const scroll = (direction) => {
+//         if (!scrollRef.current) return;
+//         const scrollAmount = 300;
+//         scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+//     };
+
+//     useEffect(() => {
+//         const container = scrollRef.current;
+//         if (container) {
+//             container.addEventListener("scroll", updateScrollButtons);
+//             updateScrollButtons();
+//         }
+//         return () => {
+//             if (container) container.removeEventListener("scroll", updateScrollButtons);
+//         };
+//     }, [newArrivals]);
+    
+//     const getImageUrl = (imgArray) => {
+//         const firstImage = imgArray?.[0];
+//         if (!firstImage || typeof firstImage !== 'object') return null;
+      
+//         const entries = Object.entries(firstImage)
+//           .filter(([key]) => !isNaN(key)) // only numeric keys
+//           .sort((a, b) => a[0] - b[0])    // sort by key
+//           .map(([, value]) => value);     // get values only
+      
+//         return entries.join('');
+//     };
+      
+
+//     return (
+//         <section className="px-4 sm:px-6">
+//             <div className='container mx-auto text-center mb-6 sm:mb-10 relative'>
+//                 <h2 className='text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4'>Explore New Arrivals</h2>
+//                 <p className='text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8'>
+//                     Newest Treasures Just Landed—Shop Now!
+//                 </p>
+//                 <div className='absolute right-2 sm:right-3 bottom-[-30px] flex space-x-1 sm:space-x-2'>
+//                     <button
+//                         onClick={() => scroll('left')}
+//                         className={`p-1.5 sm:p-2 rounded border bg-white text-black hover:bg-gray-50 transition-colors ${!canScrollLeft && 'opacity-50 cursor-not-allowed'}`}
+//                         disabled={!canScrollLeft}
+//                     >
+//                         <FiChevronLeft className='text-lg sm:text-xl lg:text-2xl' />
+//                     </button>
+//                     <button
+//                         onClick={() => scroll('right')}
+//                         className={`p-1.5 sm:p-2 rounded border bg-white text-black hover:bg-gray-50 transition-colors ${!canScrollRight && 'opacity-50 cursor-not-allowed'}`}
+//                         disabled={!canScrollRight}
+//                     >
+//                         <FiChevronRight className='text-lg sm:text-xl lg:text-2xl' />
+//                     </button>
+//                 </div>
+//             </div>
+
+//             <div
+//                 ref={scrollRef}
+//                 className='container mx-auto overflow-x-auto flex space-x-4 sm:space-x-6 relative scroll-smooth no-scrollbar'
+//             >
+//                 {newArrivals.length === 0 ? (
+//                     <p className="text-center w-full py-12 sm:py-20 text-gray-500 text-sm sm:text-base">No new arrivals available at the moment.</p>
+//                 ) : (
+//                     newArrivals.map((product, index) => {
+//                         const imageUrl = getImageUrl(product?.img) || '/placeholder.jpg';
+
+//                         return (
+//                             <div
+//                                 key={product._id}
+//                                 className='min-w-[80%] sm:min-w-[50%] md:min-w-[40%] lg:min-w-[30%] xl:min-w-[25%] relative rounded-lg overflow-hidden shadow-lg'
+//                             >
+//                                 <img
+//                                     src={imageUrl}
+//                                     alt={product?.name || 'New Arrival'}
+//                                     className='w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover'
+//                                 />
+
+//                                 <div className='absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 sm:p-4'>
+//                                     <Link to={`/product/${product._id}`} className='block'>
+//                                         <h4 className='font-medium text-sm sm:text-base'>{product.name}</h4>
+//                                         <p className='mt-1 text-sm sm:text-base'>₹{product.price?.toLocaleString()}</p>
+//                                     </Link>
+//                                 </div>
+//                             </div>
+//                         );
+//                     })
+//                 )}
+//             </div>
+//         </section>
+//     );
+// };
+
+// export default NewArrivals;
+
+
+
+
+//test
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { API } from "../../config/api";   // ✅ Use global API
 
 const NewArrivals = () => {
-    const scrollRef = useRef(null);
-    const [canScrollLeft, setCanScrollLeft] = useState(false);
-    const [canScrollRight, setCanScrollRight] = useState(true);
-    const [newArrivals, setNewArrivals] = useState([]);
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [newArrivals, setNewArrivals] = useState([]);
 
-    useEffect(() => {
-        const fetchNewArrivals = async () => {
-            try {
-                const response = await axios.get('http://suvarnarup-ecommerce.imcc.com/api/products/new-arrivals');
-                setNewArrivals(response.data || []);
-            } catch (error) {
-                console.error("Failed to fetch new arrivals:", error);
-            }
-        };
-        fetchNewArrivals();
-    }, []);
-
-    const updateScrollButtons = () => {
-        const container = scrollRef.current;
-        if (!container) return;
-        setCanScrollLeft(container.scrollLeft > 0);
-        setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth);
+  // ---------------------------
+  // Fetch New Arrivals
+  // ---------------------------
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        const response = await axios.get(`${API}/products/new-arrivals`);
+        setNewArrivals(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch new arrivals:", error);
+        setNewArrivals([]); // Prevent crash
+      }
     };
 
-    const scroll = (direction) => {
-        if (!scrollRef.current) return;
-        const scrollAmount = 300;
-        scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-    };
+    fetchNewArrivals();
+  }, []);
 
-    useEffect(() => {
-        const container = scrollRef.current;
-        if (container) {
-            container.addEventListener("scroll", updateScrollButtons);
-            updateScrollButtons();
-        }
-        return () => {
-            if (container) container.removeEventListener("scroll", updateScrollButtons);
-        };
-    }, [newArrivals]);
-    
-    const getImageUrl = (imgArray) => {
-        const firstImage = imgArray?.[0];
-        if (!firstImage || typeof firstImage !== 'object') return null;
-      
-        const entries = Object.entries(firstImage)
-          .filter(([key]) => !isNaN(key)) // only numeric keys
-          .sort((a, b) => a[0] - b[0])    // sort by key
-          .map(([, value]) => value);     // get values only
-      
-        return entries.join('');
-    };
-      
+  // ---------------------------
+  // Scroll Handling
+  // ---------------------------
+  const updateScrollButtons = () => {
+    const container = scrollRef.current;
+    if (!container) return;
 
-    return (
-        <section className="px-4 sm:px-6">
-            <div className='container mx-auto text-center mb-6 sm:mb-10 relative'>
-                <h2 className='text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4'>Explore New Arrivals</h2>
-                <p className='text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8'>
-                    Newest Treasures Just Landed—Shop Now!
-                </p>
-                <div className='absolute right-2 sm:right-3 bottom-[-30px] flex space-x-1 sm:space-x-2'>
-                    <button
-                        onClick={() => scroll('left')}
-                        className={`p-1.5 sm:p-2 rounded border bg-white text-black hover:bg-gray-50 transition-colors ${!canScrollLeft && 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!canScrollLeft}
-                    >
-                        <FiChevronLeft className='text-lg sm:text-xl lg:text-2xl' />
-                    </button>
-                    <button
-                        onClick={() => scroll('right')}
-                        className={`p-1.5 sm:p-2 rounded border bg-white text-black hover:bg-gray-50 transition-colors ${!canScrollRight && 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!canScrollRight}
-                    >
-                        <FiChevronRight className='text-lg sm:text-xl lg:text-2xl' />
-                    </button>
-                </div>
-            </div>
-
-            <div
-                ref={scrollRef}
-                className='container mx-auto overflow-x-auto flex space-x-4 sm:space-x-6 relative scroll-smooth no-scrollbar'
-            >
-                {newArrivals.length === 0 ? (
-                    <p className="text-center w-full py-12 sm:py-20 text-gray-500 text-sm sm:text-base">No new arrivals available at the moment.</p>
-                ) : (
-                    newArrivals.map((product, index) => {
-                        const imageUrl = getImageUrl(product?.img) || '/placeholder.jpg';
-
-                        return (
-                            <div
-                                key={product._id}
-                                className='min-w-[80%] sm:min-w-[50%] md:min-w-[40%] lg:min-w-[30%] xl:min-w-[25%] relative rounded-lg overflow-hidden shadow-lg'
-                            >
-                                <img
-                                    src={imageUrl}
-                                    alt={product?.name || 'New Arrival'}
-                                    className='w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover'
-                                />
-
-                                <div className='absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 sm:p-4'>
-                                    <Link to={`/product/${product._id}`} className='block'>
-                                        <h4 className='font-medium text-sm sm:text-base'>{product.name}</h4>
-                                        <p className='mt-1 text-sm sm:text-base'>₹{product.price?.toLocaleString()}</p>
-                                    </Link>
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
-        </section>
+    setCanScrollLeft(container.scrollLeft > 0);
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth
     );
+  };
+
+  const scroll = (direction) => {
+    if (!scrollRef.current) return;
+    const amount = 300;
+
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container) {
+      container.addEventListener("scroll", updateScrollButtons);
+      updateScrollButtons();
+    }
+    return () => {
+      if (container) container.removeEventListener("scroll", updateScrollButtons);
+    };
+  }, [newArrivals]);
+
+  // ---------------------------
+  // Extract Image
+  // ---------------------------
+  const getImageUrl = (imgArray) => {
+    const first = imgArray?.[0];
+    if (!first || typeof first !== "object") return "/placeholder.jpg";
+
+    const urls = Object.entries(first)
+      .filter(([key]) => !isNaN(key))
+      .sort((a, b) => a[0] - b[0])
+      .map(([, value]) => value);
+
+    return urls[0] || "/placeholder.jpg";
+  };
+
+  // ---------------------------
+  // UI
+  // ---------------------------
+  return (
+    <section className="px-4 sm:px-6">
+      <div className="container mx-auto text-center mb-6 sm:mb-10 relative">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">
+          Explore New Arrivals
+        </h2>
+        <p className="text-sm sm:text-base text-gray-600 mb-8">
+          Newest Treasures Just Landed — Shop Now!
+        </p>
+
+        {/* Scroll Buttons */}
+        <div className="absolute right-2 sm:right-3 bottom-[-30px] flex space-x-2">
+          <button
+            onClick={() => scroll("left")}
+            disabled={!canScrollLeft}
+            className={`p-2 rounded border bg-white hover:bg-gray-50 transition ${
+              !canScrollLeft && "opacity-40 cursor-not-allowed"
+            }`}
+          >
+            <FiChevronLeft className="text-xl" />
+          </button>
+
+          <button
+            onClick={() => scroll("right")}
+            disabled={!canScrollRight}
+            className={`p-2 rounded border bg-white hover:bg-gray-50 transition ${
+              !canScrollRight && "opacity-40 cursor-not-allowed"
+            }`}
+          >
+            <FiChevronRight className="text-xl" />
+          </button>
+        </div>
+      </div>
+
+      {/* Product List */}
+      <div
+        ref={scrollRef}
+        className="container mx-auto overflow-x-auto flex space-x-4 no-scrollbar scroll-smooth"
+      >
+        {newArrivals.length === 0 ? (
+          <p className="text-center w-full py-16 text-gray-500">
+            No new arrivals available at the moment.
+          </p>
+        ) : (
+          newArrivals.map((product) => {
+            const imageUrl = getImageUrl(product.img);
+
+            return (
+              <div
+                key={product._id}
+                className="min-w-[80%] sm:min-w-[50%] md:min-w-[40%] lg:min-w-[30%] xl:min-w-[25%]
+                           rounded-lg overflow-hidden shadow-lg relative"
+              >
+                <img
+                  src={imageUrl}
+                  alt={product.name}
+                  className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-cover"
+                />
+
+                <div className="absolute bottom-0 w-full bg-black/50 text-white p-3">
+                  <Link to={`/product/${product._id}`}>
+                    <h4 className="font-medium text-sm sm:text-base">
+                      {product.name}
+                    </h4>
+                    <p className="mt-1 text-sm">
+                      ₹{product.price?.toLocaleString()}
+                    </p>
+                  </Link>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default NewArrivals;
