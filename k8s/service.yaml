@@ -40,8 +40,8 @@ kind: Ingress
 metadata:
   name: ecommerce-ingress
   namespace: "2401080"
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
